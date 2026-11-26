@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#19150f">
+    <title>練琴循環播放器</title>
+    <link rel="stylesheet" href="../src/toolbox.css">
+    <link rel="stylesheet" href="./loop.css">
+  </head>
+  <body class="toolbox">
+    <header class="tool-nav wrap">
+      <a class="brand" href="../">練琴工具箱</a>
+      <nav aria-label="練習工具">
+        <a href="../chords/">和弦練習</a>
+        <a href="./" aria-current="page">循環播放器</a>
+      </nav>
+    </header>
+    <main class="wrap loop-page">
+      <h1>練琴循環播放器</h1>
+      <section class="panel source" aria-label="加入曲子">
+        <form id="youtube-form">
+          <label for="youtube-url">YouTube 連結</label>
+          <div class="input-row">
+            <input id="youtube-url" type="text" inputmode="url" autocomplete="off" placeholder="https://www.youtube.com/watch?v=…" required>
+            <button id="load-video" class="primary" type="submit" disabled>載入影片</button>
+          </div>
+        </form>
+        <div class="file-area">
+          <label class="button file-button">選擇音檔<input id="audio-file" type="file" accept="audio/*,.mp3,.wav,.m4a" disabled></label>
+          <span class="hint">MP3、WAV、M4A</span>
+        </div>
+        <div class="source-feedback">
+          <span id="source-status" role="status"></span>
+          <a id="original-link" hidden target="_blank" rel="noopener">在 YouTube 開啟</a>
+        </div>
+      </section>
+
+      <div class="practice-grid">
+        <div class="practice-main">
+          <section class="panel player">
+            <h2 id="track-title">播放器</h2>
+            <div id="media-host" class="media-host" data-kind="empty"><p>先貼上影片連結或選擇音檔。</p></div>
+            <fieldset id="transport" disabled>
+              <legend class="visually-hidden">播放控制</legend>
+              <div class="timeline-meta"><span id="position">0:00.00</span><span id="duration">0:00.00</span></div>
+              <input id="timeline" type="range" min="0" max="0" step="any" value="0" aria-label="播放位置">
+              <div class="play-row">
+                <button id="play" type="button" class="primary">開始練習</button>
+                <button id="restart" type="button">從頭再來</button>
+                <div class="beat-box"><span id="beat" aria-hidden="true"></span><span id="play-state" role="status"></span></div>
+              </div>
+              <div class="marker-grid">
+                <div class="marker">
+                  <button id="mark-a" type="button">設起點 A</button>
+                  <div class="nudge"><button type="button" data-nudge="a" data-delta="-0.1" aria-label="起點減 0.1 秒">−</button><input id="mark-a-time" type="number" min="0" step="any" aria-label="起點 A（秒）"><button type="button" data-nudge="a" data-delta="0.1" aria-label="起點加 0.1 秒">＋</button></div>
+                </div>
+                <div class="marker">
+                  <button id="mark-b" type="button">設終點 B</button>
+                  <div class="nudge"><button type="button" data-nudge="b" data-delta="-0.1" aria-label="終點減 0.1 秒">−</button><input id="mark-b-time" type="number" min="0" step="any" aria-label="終點 B（秒）"><button type="button" data-nudge="b" data-delta="0.1" aria-label="終點加 0.1 秒">＋</button></div>
+                </div>
+              </div>
+              <p id="range-status" class="hint" role="status">A、B 點以秒為單位。</p>
+            </fieldset>
+          </section>
+
+          <section class="panel">
+            <h2>練習設定</h2>
+            <fieldset id="settings" disabled>
+              <legend class="visually-hidden">速度和循環設定</legend>
+              <div class="speed-and-tempo">
+                <div class="speed-control">
+                  <div class="speed-label"><label for="speed">播放速度</label><output id="speed-value" for="speed">1×</output></div>
+                  <input id="speed" type="range" min="0.3" max="2" step="0.05" value="1" aria-describedby="speed-help">
+                  <p id="speed-help" class="hint"></p>
+                </div>
+                <div class="tempo-control">
+                  <label for="original-bpm">原速 BPM</label>
+                  <input id="original-bpm" type="number" min="20" max="400" step="any" inputmode="decimal" placeholder="手動輸入">
+                  <output id="tempo-readout" class="hint" for="original-bpm speed" aria-live="off">目前 － BPM</output>
+                </div>
+              </div>
+              <div class="round-settings">
+                <div class="round-options">
+                  <label class="check"><input id="loop-enabled" type="checkbox" checked> A–B 循環</label>
+                  <label>預備拍 <select id="count-in"><option value="off" selected>關閉</option><option value="start">只有第一遍</option><option value="each">每一遍</option></select></label>
+                </div>
+                <div class="setting-grid">
+                  <label>每輪等待（秒）<input id="gap" type="number" min="0" max="60" step="any" value="0"></label>
+                  <label>加速間隔（輪）<input id="ramp" type="number" min="0" max="99" step="1" value="0"></label>
+                  <label>加速上限<select id="ceiling"></select></label>
+                </div>
+                <p class="hint">等待或加速間隔設為 0，即關閉該功能。</p>
+              </div>
+            </fieldset>
+          </section>
+        </div>
+
+        <aside class="practice-aside">
+          <section class="panel">
+            <h2>練習片段</h2>
+            <ul id="clips" class="entry-list"></ul>
+            <p id="clips-empty" class="hint">目前沒有已儲存的練習片段。</p>
+            <fieldset id="clip-tools" disabled>
+              <legend class="visually-hidden">儲存片段</legend>
+              <label for="clip-name">片段名稱</label>
+              <input id="clip-name" type="text" maxlength="80" placeholder="例如：副歌前四小節">
+              <div class="clip-actions"><button id="save" class="primary" type="button">儲存片段</button><button id="save-new" type="button" hidden>另存新片段</button></div>
+            </fieldset>
+            <p id="clip-status" class="hint" role="status"></p>
+          </section>
+          <section class="panel">
+            <h2>最近練習</h2>
+            <label id="retain-wrap" class="check" hidden><input id="retain-audio" type="checkbox"> 將目前音檔保留在此瀏覽器</label>
+            <p id="storage-status" class="hint" role="status"></p>
+            <ul id="recent" class="entry-list"></ul>
+            <p id="recent-empty" class="hint">載入曲子後，會在這裡顯示。</p>
+          </section>
+          <p class="hint shortcuts">鍵盤快捷鍵 <kbd>Space</kbd> 播放／暫停 <kbd>A</kbd> 起點 <kbd>B</kbd> 終點 <kbd>R</kbd> 從頭再來</p>
+        </aside>
+      </div>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
