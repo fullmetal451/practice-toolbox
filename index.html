@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#19150f">
+    <title>練琴工具箱</title>
+    <link rel="stylesheet" href="./src/toolbox.css">
+  </head>
+  <body class="toolbox">
+    <header class="tool-nav wrap">
+      <a class="brand" href="./" aria-current="page">練琴工具箱</a>
+      <nav aria-label="練習工具">
+        <a href="./chords/">和弦練習</a>
+        <a href="./loop/">循環播放器</a>
+      </nav>
+    </header>
+    <main class="wrap home">
+      <h1>今天想練什麼？</h1>
+      <div class="tool-grid">
+        <a class="tool-card" href="./chords/">
+          <span class="tool-icon" aria-hidden="true">C<span>maj7</span></span>
+          <h2>和弦組成音練習</h2>
+          <p>練習寫出和弦組成音，訂正後在吉他指板上找出每個音。</p>
+          <span class="card-action">開始和弦練習 <span aria-hidden="true">→</span></span>
+        </a>
+        <a class="tool-card" href="./loop/">
+          <span class="tool-icon" aria-hidden="true">A<span> ↔ </span>B</span>
+          <h2>練琴循環播放器</h2>
+          <p>貼上 YouTube 連結或選擇音檔，標記片段、調整速度和預備拍。</p>
+          <span class="card-action">開啟循環播放器 <span aria-hidden="true">→</span></span>
+        </a>
+      </div>
+    </main>
+  </body>
+</html>

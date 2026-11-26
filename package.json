@@ -1,0 +1,11 @@
+{
+  "name": "chord-tone-trainer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "build": "node scripts/build-single-html.js",
+    "build:site": "node scripts/build-site.js",
+    "test:dist": "node --test tests/build-smoke.test.js"
+  }
+}
