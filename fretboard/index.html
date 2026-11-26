@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#19150f">
+    <title>吉他指板音名練習</title>
+    <link rel="stylesheet" href="../src/toolbox.css">
+    <link rel="stylesheet" href="./fretboard.css">
+  </head>
+  <body class="toolbox">
+    <header class="tool-nav wrap">
+      <a class="brand" href="../">練琴工具箱</a>
+      <nav aria-label="練習工具">
+        <a href="../chords/">和弦練習</a>
+        <a href="./" aria-current="page">指板音名</a>
+        <a href="../loop/">循環播放器</a>
+        <a href="../voicings/">和弦指法</a>
+      </nav>
+    </header>
+    <main class="wrap fretboard-page">
+      <h1>吉他指板音名練習</h1>
+      <section class="quiz-panel" id="setup" aria-labelledby="setup-heading">
+        <h2 id="setup-heading" tabindex="-1">選擇練習範圍</h2>
+        <p class="quiz-hint">第 0 格是空弦。</p>
+        <form id="setup-form">
+          <fieldset class="strings">
+            <legend>出題弦</legend>
+            <label><input type="checkbox" name="strings" value="1" checked> 1 弦</label>
+            <label><input type="checkbox" name="strings" value="2" checked> 2 弦</label>
+            <label><input type="checkbox" name="strings" value="3" checked> 3 弦</label>
+            <label><input type="checkbox" name="strings" value="4" checked> 4 弦</label>
+            <label><input type="checkbox" name="strings" value="5" checked> 5 弦</label>
+            <label><input type="checkbox" name="strings" value="6" checked> 6 弦</label>
+          </fieldset>
+          <div class="quiz-settings">
+            <label>起始格<input type="number" name="from" min="0" max="24" value="0" required></label>
+            <label>結束格<input type="number" name="to" min="0" max="24" value="12" required></label>
+            <label>出題音<select name="notes"><option value="all">全部 12 音</option><option value="natural">只出自然音</option></select></label>
+            <label>音名<select name="notation"><option value="letters">C、D、E</option><option value="solfege">Do、Re、Mi（固定唱名）</option></select></label>
+            <label>每題限時<select name="limit"><option value="0">不限時</option><option value="10">10 秒</option><option value="5">5 秒</option><option value="3">3 秒</option></select></label>
+            <label>下一題<select name="advance"><option value="0">手動</option><option value="2">訂正 2 秒後自動</option><option value="4">訂正 4 秒後自動</option></select></label>
+          </div>
+          <p id="setup-error" role="alert"></p>
+          <div class="quiz-actions">
+            <button class="quiz-primary" type="submit" data-mode="practice">開始自由練習</button>
+            <button type="submit" data-mode="test">開始 20 題測驗</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="quiz-panel" id="question" aria-labelledby="question-heading" hidden>
+        <div class="question-top">
+          <p id="question-progress" class="quiz-hint"></p>
+          <button type="button" id="finish">結束並看結果</button>
+        </div>
+        <h2 id="question-heading" tabindex="-1">標記位置是什麼音？</h2>
+        <p id="timer" class="quiz-hint" hidden></p>
+        <div id="neck-scroll" class="neck-scroll" tabindex="0" aria-label="吉他指板，可左右捲動">
+          <div id="neck" class="neck" role="img"></div>
+        </div>
+        <div id="answers" class="quiz-answers" role="group" aria-label="音名答案"></div>
+        <p id="feedback" role="status"></p>
+        <div class="quiz-actions"><button class="quiz-primary" id="next" type="button" hidden>下一題</button></div>
+      </section>
+
+      <section class="quiz-panel" id="summary" aria-labelledby="summary-heading" hidden>
+        <h2 id="summary-heading" tabindex="-1">練習結果</h2>
+        <p id="score"></p>
+        <p id="speed-summary" class="quiz-hint"></p>
+        <h2 id="mistakes-heading" hidden>錯題</h2>
+        <ul id="mistakes" class="mistakes"></ul>
+        <div class="quiz-actions">
+          <button class="quiz-primary" id="retry" type="button" hidden>重練錯題</button>
+          <button id="settings" type="button">返回設定</button>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
