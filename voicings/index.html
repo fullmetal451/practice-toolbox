@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#19150f">
+    <title>吉他和弦指法查詢</title>
+    <link rel="stylesheet" href="../src/toolbox.css">
+    <link rel="stylesheet" href="./voicings.css">
+  </head>
+  <body class="toolbox">
+    <header class="tool-nav wrap">
+      <a class="brand" href="../">練琴工具箱</a>
+      <nav aria-label="練習工具">
+        <a href="../chords/">和弦練習</a>
+        <a href="../fretboard/">指板音名</a>
+        <a href="../loop/">循環播放器</a>
+        <a href="./" aria-current="page">和弦指法</a>
+      </nav>
+    </header>
+    <main class="wrap voicings-page">
+      <h1>吉他和弦指法查詢</h1>
+      <section class="voicing-panel" aria-label="查詢設定">
+        <form id="chord-lookup">
+          <fieldset id="lookup-controls" disabled>
+            <legend class="sr-only">選擇要查詢的和弦</legend>
+            <label for="chord-query">和弦名稱</label>
+            <div class="search-row">
+              <input id="chord-query" name="chord" type="text" value="C" placeholder="例如 Am7、D/F#" autocapitalize="off" autocomplete="off" spellcheck="false" required>
+              <button class="voicing-primary" type="submit">查指法</button>
+            </div>
+            <div class="chord-filters">
+              <div><label for="root">根音</label><select id="root"></select></div>
+              <div><label for="quality">和弦種類</label><select id="quality"></select></div>
+              <div><label for="bass">指定最低音</label><select id="bass"></select></div>
+            </div>
+          </fieldset>
+        </form>
+        <p id="lookup-status" role="status">正在載入指法資料…</p>
+      </section>
+      <section id="results" aria-labelledby="found-chord" hidden>
+        <header class="voicing-heading">
+          <h2 id="found-chord"></h2>
+          <p id="chord-tones" class="voicing-hint"></p>
+        </header>
+        <p id="diagram-legend" class="voicing-hint">圖中第 1 弦在最上方，第 6 弦在最下方，格數往右增加。× 不彈，○ 空弦，1–4 為食指到小指，直條表示橫按。圖上方的指法數字從第 6 弦寫到第 1 弦。</p>
+        <div id="voicing-grid" class="voicing-grid"></div>
+      </section>
+      <p id="audio-status" role="status"></p>
+      <footer class="voicing-hint">指法資料來自 <a href="https://github.com/tombatossals/chords-db" target="_blank" rel="noopener">chords-db</a>（<a href="./LICENSE-chords-db.txt">MIT 授權</a>）。</footer>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

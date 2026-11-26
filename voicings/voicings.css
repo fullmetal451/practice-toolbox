@@ -1,0 +1,77 @@
+.voicings-page { padding-block: clamp(24px, 4vw, 46px) 52px; }
+.voicings-page h1 { margin-bottom: 20px; }
+.voicings-page [hidden] { display: none !important; }
+.voicing-panel, .voicing-card { padding: clamp(14px, 2vw, 22px); border: 1px solid #5a4b39; border-radius: 10px; background: #262019; }
+.voicing-panel fieldset { display: grid; gap: 8px; border: 0; margin: 0; padding: 0; min-width: 0; }
+.voicings-page label { display: block; color: #ecd7b7; font-size: .92rem; font-weight: 650; }
+.voicings-page input, .voicings-page select, .voicings-page button { min-width: 0; min-height: 44px; padding: 7px 10px; border: 1px solid #78654d; border-radius: 5px; color: #faead0; background: #1b1713; font: inherit; }
+.voicings-page button { font-weight: 650; cursor: pointer; background: #352a1f; }
+.voicings-page button:hover { border-color: #edb45e; }
+.voicings-page button.voicing-primary { color: #201407; background: #edb45e; border-color: #edb45e; }
+.search-row { display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr) auto; }
+.chord-filters { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr); gap: 8px; }
+.chord-filters select { display: block; width: 100%; }
+#lookup-status { margin-top: 10px; }
+.voicing-hint { color: #d2c1a6; font-size: .9rem; }
+.voicing-heading { margin-top: 22px; }
+.voicing-heading h2 { font-size: clamp(1.2rem, 2.8vw, 1.8rem); }
+#diagram-legend { margin-top: 4px; }
+.voicing-grid { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-block: 12px 20px; }
+.voicing-card h3 { margin: 0 0 5px; font-size: 1rem; }
+.position-text { color: #ebcf9d; font-size: .91rem; font-variant-numeric: tabular-nums; }
+.voicing-diagram {
+  --string-spacing: 36px;
+  --marker-size: 22px;
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) 44px;
+  column-gap: 7px;
+  margin-block: 6px 12px;
+}
+.string-statuses, .string-notes { display: grid; grid-template-rows: repeat(6, var(--string-spacing)); place-items: center; }
+.string-statuses { color: #e8c482; }
+.diagram-neck { position: relative; margin-block: calc(var(--string-spacing) / 2); }
+.diagram-string, .diagram-fret { position: absolute; }
+.diagram-string { inset-inline: 0; height: 1px; transform: translateY(-50%); background: #ae9674; }
+.diagram-fret { inset-block: 0; width: 1px; transform: translateX(-50%); background: #ae9674; }
+.diagram-nut { width: 4px; background: #edcca0; }
+.finger-marker, .barre-span {
+  position: absolute;
+  box-sizing: border-box;
+  width: var(--marker-size);
+  border: 1px solid #ffd98f;
+  border-radius: 999px;
+  background: #efb55e;
+  color: #211406;
+  font-size: .79rem;
+  font-weight: 800;
+}
+.finger-marker { display: grid; place-items: center; height: var(--marker-size); transform: translate(-50%, -50%); }
+.barre-span {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  top: calc(var(--start) - var(--marker-size) / 2);
+  height: calc(var(--length) + var(--marker-size));
+  transform: translateX(-50%);
+}
+.barre-span > span { display: grid; place-items: center; height: calc(var(--marker-size) - 2px); }
+.fret-labels {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: repeat(var(--fret-count), minmax(0, 1fr));
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-size: .8rem;
+  color: #d2c1a6;
+}
+.voicings-page .string-note { width: 100%; min-height: calc(var(--string-spacing) - 2px); padding: 2px; font-size: .79rem; }
+.voicing-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+#audio-status { color: #ffb9a9; margin-block: 6px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 860px) { .voicing-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 535px) {
+  .voicing-grid { grid-template-columns: minmax(0, 1fr); }
+  .chord-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .chord-filters > :last-child { grid-column: 1 / -1; }
+  .voicing-diagram { --string-spacing: 44px; }
+}
