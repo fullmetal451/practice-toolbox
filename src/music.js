@@ -1,6 +1,6 @@
 const LETTERS = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
 const NATURAL_PITCH = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-const PITCH_LABELS = ['C', 'C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab', 'A', 'A#/Bb', 'B'];
+export const PITCH_LABELS = ['C', 'C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab', 'A', 'A#/Bb', 'B'];
 const STRING_PITCHES = [4, 9, 2, 7, 11, 4];
 const STRING_NAMES = ['E', 'A', 'D', 'G', 'B', 'E'];
 
@@ -192,15 +192,19 @@ export function gradeNotes(expected, actual) {
   return { correct: entries.length === actualNames.length && entries.every((entry) => entry.correct), entries };
 }
 
+export function guitarPitchAt(stringNumber, fret) {
+  return modulo(STRING_PITCHES[6 - stringNumber] + fret, 12);
+}
+
 export function fretboardCells(chordNotes) {
   const targets = new Map(chordNotes.map((tone) => [tone.pitchClass, tone]));
-  return STRING_PITCHES.flatMap((openPitch, stringIndex) => Array.from({ length: 12 }, (_, index) => {
+  return STRING_NAMES.flatMap((stringName, stringIndex) => Array.from({ length: 12 }, (_, index) => {
     const fret = index + 1;
-    const pitchClass = modulo(openPitch + fret, 12);
+    const pitchClass = guitarPitchAt(6 - stringIndex, fret);
     const targetTone = targets.get(pitchClass) ?? null;
     return {
       stringIndex,
-      stringName: STRING_NAMES[stringIndex],
+      stringName,
       fret,
       pitchClass,
       displayName: PITCH_LABELS[pitchClass],
