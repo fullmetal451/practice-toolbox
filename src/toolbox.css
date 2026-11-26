@@ -1,0 +1,26 @@
+.wrap { width: min(1120px, calc(100% - 36px)); margin-inline: auto; }
+.tool-nav { display: flex; justify-content: space-between; align-items: center; gap: 10px 24px; flex-wrap: wrap; padding-block: 12px; border-bottom: 1px solid #574b3d; }
+.tool-nav a { text-decoration: none; color: #e5d8c2; }
+.tool-nav .brand { color: #f6e9d0; font-weight: 800; letter-spacing: .04em; }
+.tool-nav nav { display: flex; align-items: center; gap: 6px; }
+.tool-nav nav a { padding: 9px 10px; font-size: .9rem; border-radius: 6px; }
+.tool-nav nav a:is(:hover, [aria-current="page"]) { color: #ffdb95; background: #36271d; }
+.tool-nav a:focus-visible { outline: 2px solid #ffd788; outline-offset: 3px; }
+.toolbox { color-scheme: dark; margin: 0; color: #f5ebd9; background: #191510; font: 400 1rem/1.55 system-ui, 'Microsoft JhengHei', sans-serif; min-height: 100vh; }
+.toolbox *, .toolbox *::before, .toolbox *::after { box-sizing: border-box; }
+.toolbox a { color: #ffd68b; }
+.toolbox h1, .toolbox h2, .toolbox p { margin: 0; }
+.toolbox h1 { font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.18; letter-spacing: -.025em; }
+.toolbox h2 { font-size: 1.15rem; }
+.home { padding-block: clamp(46px, 10vw, 106px); }
+.home h1 { margin-bottom: 30px; }
+.tool-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.toolbox .tool-card { min-height: 224px; display: grid; align-content: start; justify-items: start; gap: 10px; padding: clamp(20px, 4vw, 38px); text-decoration: none; color: #f5ebd9; border: 1px solid #67523a; border-radius: 12px; background: linear-gradient(135deg, #30251b, #241d17); }
+.toolbox .tool-card:hover { border-color: #ddab63; background: linear-gradient(135deg, #3a2b1d, #2b2119); }
+.tool-card h2 { font-size: 1.35rem; }
+.tool-card p { color: #d1c3ab; }
+.tool-icon { border: 1px solid #8a6b40; color: #ffdaa0; border-radius: 7px; padding: 6px 11px; font: 650 1.2rem/1.2 ui-monospace, Consolas, monospace; margin-bottom: 6px; }
+.tool-icon span { font-size: .8em; }
+.card-action { color: #ffce83; font-size: .9rem; margin-top: 12px; }
+.toolbox :focus-visible { outline: 2px solid #ffd788; outline-offset: 3px; }
+@media (max-width: 590px) { .tool-grid { grid-template-columns: minmax(0, 1fr); } .toolbox .tool-card { min-height: auto; } }
