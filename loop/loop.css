@@ -42,6 +42,12 @@
 .marker, .tempo-control { display: grid; gap: 4px; align-content: end; }
 .nudge { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px; }
 .nudge input { text-align: center; }
+/* Touch and narrow screens: time field on top, large − and ＋ below it. */
+@media (pointer: coarse), (max-width: 480px) {
+  .nudge { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .nudge input { grid-column: 1 / -1; grid-row: 1; }
+  .loop-page .nudge button { min-height: 46px; padding-inline: 6px; font-size: 1.35rem; line-height: 1; }
+}
 .setting-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .round-settings { border-top: 1px solid #584936; margin-top: 4px; padding-top: 10px; display: grid; gap: 8px; }
 .round-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; gap: 8px; }
@@ -63,5 +69,6 @@
 kbd { font-size: .85em; padding: 1px 3px; background: #3d3023; border-radius: 3px; white-space: nowrap; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 @media (max-width: 720px) { .practice-grid { grid-template-columns: minmax(0, 1fr); } }
-@media (max-width: 410px) { .setting-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .loop-page .input-row { flex-wrap: wrap; } .input-row input { flex-basis: 100%; } .nudge button { padding-inline: 6px; } }
+@media (max-width: 410px) { .setting-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .loop-page .input-row { flex-wrap: wrap; } .input-row input { flex-basis: 100%; } }
 @media (pointer: coarse) { .shortcuts { display: none; } }
+.unsaved { color: #ffcf7f; margin-top: 8px; }

@@ -73,7 +73,7 @@
               <div class="speed-and-tempo">
                 <div class="speed-control">
                   <div class="speed-label"><label for="speed">播放速度</label><output id="speed-value" for="speed">1×</output></div>
-                  <input id="speed" type="range" min="0.3" max="2" step="0.05" value="1" aria-describedby="speed-help">
+                  <input id="speed" type="range" min="0.25" max="2" step="0.05" value="1" aria-describedby="speed-help">
                   <p id="speed-help" class="hint"></p>
                 </div>
                 <div class="tempo-control">
@@ -108,6 +108,7 @@
               <label for="clip-name">片段名稱</label>
               <input id="clip-name" type="text" maxlength="80" placeholder="例如：副歌前四小節">
               <div class="clip-actions"><button id="save" class="primary" type="button">儲存片段</button><button id="save-new" type="button" hidden>另存新片段</button></div>
+              <p id="clip-dirty" class="hint unsaved" hidden>這個片段有尚未儲存的變更，按「更新片段」才會保留。</p>
             </fieldset>
             <p id="clip-status" class="hint" role="status"></p>
           </section>

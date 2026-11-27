@@ -12,6 +12,9 @@ test('辨識一般和弦、升降記號及帶指定低音的和弦', () => {
   assert.equal(chordSymbol(parseChordQuery('C6/9/E')), 'C6/9/E');
   assert.equal(chordSymbol(parseChordQuery('DbM7')), 'Dbmaj7');
   assert.equal(parseChordQuery('Hxyz'), null);
+  for (const [symbol, type] of [['C°', 'dim'], ['Co', 'dim'], ['Bo7', 'dim7'], ['C+', 'aug'], ['Csus', 'sus4'], ['G7+', '7s5'], ['E5', 'power']]) {
+    assert.equal(parseChordQuery(symbol)?.type, type, symbol);
+  }
 });
 
 test('C 的開放把位對應正確格數、指法及試聽音高', () => {
@@ -33,4 +36,12 @@ test('比對指定低音時使用實際最低頻率，並保留原輸入的音�
     )));
   }
   assert.deepEqual(lookupChord(database, parseChordQuery('Db')).tones, ['D♭', 'F', 'A♭']);
+});
+
+test('強力和弦只含根音與五度，並查得到指法', () => {
+  const result = lookupChord(database, parseChordQuery('E5'));
+  assert.equal(result.symbol, 'E5');
+  assert.deepEqual(result.tones, ['E', 'B']);
+  assert.ok(result.positions.length);
+  assert.ok(result.positions.every(({ strings }) => strings.every(({ midi }) => midi === null || [4, 11].includes(midi % 12))));
 });

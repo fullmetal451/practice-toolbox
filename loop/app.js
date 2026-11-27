@@ -22,6 +22,10 @@ let shownRate = 1;
 let scrubbing = false;
 let retainOperation;
 let recentRequest;
+// Set once playback is seen before B in the current round, so a stale
+// YouTube time reported just after jumping back to A cannot end the round again.
+let armed = false;
+let savedState;
 
 function say(id, message = '', error = false) {
   if (ui[id].textContent !== message) ui[id].textContent = message;
@@ -104,6 +108,23 @@ function effectiveSpeed(speed) {
   return speeds.includes(speed) ? speed : speeds.includes(1) ? 1 : speeds[0] ?? 1;
 }
 
+function clipState() {
+  return JSON.stringify([clip.a, clip.b, clip.speed, clip.bpm ?? null, clip.countIn, clip.loop, clip.gap, clip.ramp, clip.ceiling, ui['clip-name'].value.trim()]);
+}
+
+function markSaved() {
+  savedState = selected ? clipState() : undefined;
+  ui['clip-dirty'].hidden = true;
+}
+
+function unsaved() {
+  return !!selected && savedState !== undefined && clipState() !== savedState;
+}
+
+function confirmDiscard() {
+  return !unsaved() || window.confirm(`「${clip.name}」有尚未儲存的變更，確定要放棄嗎？`);
+}
+
 function showClip() {
   ui['mark-a-time'].value = clip.a ?? '';
   ui['mark-b-time'].value = clip.b ?? '';
@@ -141,6 +162,7 @@ function renderLists() {
         selected = undefined;
         showClip();
         ui['clip-name'].value = name;
+        markSaved();
       }
       const saved = persist();
       renderLists();
@@ -160,10 +182,37 @@ function renderLists() {
     const button = listButton(entry.title + suffix, () => openRecent(entry));
     button.setAttribute('aria-current', String(entry.id === track?.id));
     row.append(button);
+    if (entry.id !== track?.id) {
+      const remove = listButton('移除', () => removeRecent(entry));
+      remove.setAttribute('aria-label', `從最近練習移除 ${entry.title}`);
+      row.append(remove);
+    }
     return row;
   });
   ui.recent.replaceChildren(...recentRows);
   ui['recent-empty'].hidden = !!recentRows.length;
+}
+
+async function removeRecent(entry) {
+  const count = entry.clips?.length ?? 0;
+  const extras = [count ? `${count} 個片段` : '', entry.retained ? '保留的音檔' : ''].filter(Boolean).join('和');
+  const spacer = /^\d/.test(extras) ? ' ' : '';
+  if (!window.confirm(`從最近練習移除「${entry.title}」${extras ? `，連同${spacer}${extras}` : ''}？`)) return;
+  if (entry.id === track?.id) return;
+  const index = library.indexOf(entry);
+  if (index !== -1) library.splice(index, 1);
+  const saved = persist();
+  renderLists();
+  let audioRemoved = true;
+  if (entry.retained) {
+    try {
+      await storedAudio(entry.id, null);
+    } catch {
+      audioRemoved = false;
+    }
+  }
+  if (!audioRemoved) say('storage-status', '已移除紀錄，但無法刪除保留的音檔。', true);
+  else say('storage-status', saved ? `已移除「${entry.title}」。` : '已在這次工作階段移除，瀏覽器無法儲存。', !saved);
 }
 
 function stopSequence() {
@@ -189,10 +238,12 @@ function editSavedClip({ beats, ...settings }) {
 
 function selectClip(entry) {
   if (!media || loading || !duration) return;
+  if (entry.id !== selected && !confirmDiscard()) return;
   resetPractice();
   editSavedClip(entry);
   media.setRate(effectiveSpeed(clip.speed));
   showClip();
+  markSaved();
   renderLists();
   say('clip-status', `已選擇「${clip.name}」。`);
 }
@@ -212,6 +263,7 @@ function saveClip(copy = false) {
   clip = { ...clip };
   const saved = persist();
   showClip();
+  markSaved();
   renderLists();
   say('clip-status', saved ? `已儲存「${name}」。` : '這次工作階段已保留，瀏覽器無法儲存。', !saved);
 }
@@ -234,13 +286,16 @@ function displayDuration() {
     ui.settings.disabled = false;
     ui['clip-tools'].disabled = false;
     showClip();
+    markSaved();
     renderLists();
   } else {
     // YouTube may replace its initial whole-second duration once playback begins.
     const end = trackEnd(clip.b, previousDuration, duration);
     if (end !== clip.b) {
+      const clean = !unsaved();
       clip.b = end;
       ui['mark-b-time'].value = end;
+      if (clean) markSaved();
     }
   }
   drawRange();
@@ -251,7 +306,8 @@ function reportPlayerError(message) {
   say('source-status', message, true);
 }
 
-async function openTrack(info, audioFile) {
+async function openTrack(info, audioFile, confirmed = false) {
+  if (!confirmed && !confirmDiscard()) return;
   recentRequest = undefined;
   load?.abort();
   load = new AbortController();
@@ -288,6 +344,7 @@ async function openTrack(info, audioFile) {
   say('clip-status');
   say('storage-status');
   showClip();
+  markSaved();
   renderLists();
 
   const adapter = info.kind === 'youtube'
@@ -311,6 +368,7 @@ async function openTrack(info, audioFile) {
     if (!duration && track.clips.length) {
       editSavedClip(track.clips[0]);
       showClip();
+      markSaved();
     }
     ui.transport.disabled = false;
     ui['retain-wrap'].hidden = info.kind !== 'audio';
@@ -340,8 +398,9 @@ function audioInfo(audioFile) {
 
 async function openRecent(entry) {
   if (entry.kind === 'youtube') {
+    if (!confirmDiscard()) return;
     ui['youtube-url'].value = `https://www.youtube.com/watch?v=${entry.videoId}`;
-    return openTrack(entry);
+    return openTrack(entry, undefined, true);
   }
   if (entry.id === track?.id) return;
   const request = Symbol();
@@ -369,6 +428,7 @@ async function playRound(repeat = false) {
   stopSequence();
   const controller = new AbortController();
   sequence = controller;
+  armed = false;
   const { signal } = controller;
   const adapter = media;
   const gap = repeat ? clip.gap : 0;
@@ -393,7 +453,8 @@ async function playRound(repeat = false) {
     await adapter.play();
     for (let attempt = 0; attempt < 40 && !adapter.advancing(); attempt++) await delay(45, signal);
     if (!adapter.active() && !adapter.advancing()) throw new Error('播放尚未開始，請重試。');
-    say('play-state', clip.loop ? `第 ${rounds + 1} 輪 · ${adapter.rate()}×` : '播放中');
+    // YouTube applies a new rate a moment later, so show the rate this round asked for.
+    say('play-state', clip.loop ? `第 ${rounds + 1} 輪 · ${rate}×` : '播放中');
   } catch (error) {
     if (signal.aborted) return;
     practicing = false;
@@ -453,7 +514,8 @@ function tick(now) {
   const label = sequence ? '停止' : active ? '暫停' : practicing && !media.ended() ? '繼續播放' : '開始練習';
   if (ui.play.textContent !== label) ui.play.textContent = label;
   if (sequence || scrubbing || !practicing) return;
-  if (clip.loop && validRange(clip, duration) && (media.advancing() || media.ended()) && position + 0.005 >= clip.b) {
+  if (position + 0.005 < clip.b) armed = true;
+  if (armed && clip.loop && validRange(clip, duration) && (media.advancing() || media.ended()) && position + 0.005 >= clip.b) {
     rounds++;
     rate = nextSpeed(clip, rate, rounds, speeds);
     playRound(true);
@@ -581,6 +643,12 @@ ui['original-bpm'].addEventListener('change', () => {
   showTempo();
 });
 
+window.addEventListener('beforeunload', (event) => {
+  if (!unsaved()) return;
+  event.preventDefault();
+  event.returnValue = '';
+});
+
 ui.save.addEventListener('click', () => saveClip());
 ui['save-new'].addEventListener('click', () => saveClip(true));
 document.addEventListener('keydown', (event) => {
@@ -593,6 +661,11 @@ document.addEventListener('keydown', (event) => {
   event.preventDefault();
   action();
 });
+
+// Registered last, so the hint reflects edits made by the handlers above.
+for (const type of ['input', 'change', 'click', 'keydown']) {
+  document.addEventListener(type, () => { ui['clip-dirty'].hidden = !unsaved(); });
+}
 
 showClip();
 renderLists();

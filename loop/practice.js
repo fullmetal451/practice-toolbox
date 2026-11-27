@@ -1,4 +1,4 @@
-const AUDIO_SPEED_MIN = 0.3;
+const AUDIO_SPEED_MIN = 0.25;
 const AUDIO_SPEED_MAX = 2;
 export const AUDIO_SPEED_STEP = 0.05;
 export const AUDIO_SPEEDS = Array.from(

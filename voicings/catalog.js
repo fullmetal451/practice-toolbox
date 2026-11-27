@@ -11,21 +11,27 @@ const TYPE_KEYS = {
   '7s9': '7#9', '7b9': '7b9', '9s5': 'aug9', '9b5': '9b5', '7s5': 'aug7', '7b5': '7b5',
 };
 
-export const CHORD_TYPES = CHORD_TEMPLATES.filter(({ id }) => TYPE_KEYS[id]).map(({ id, label }) => ({
+// Power chords exist only in the voicing lookup, not in the chord-tone trainer's templates.
+const POWER_CHORD = { id: 'power', label: '強力和弦', key: '5', symbol: '5', base: 'maj', degrees: [0, 2] };
+
+const TEMPLATE_TYPES = CHORD_TEMPLATES.filter(({ id }) => TYPE_KEYS[id]).map(({ id, label }) => ({
   id,
   label,
   key: TYPE_KEYS[id],
   symbol: ({ maj: '', minMaj7: 'mMaj7', augMaj7: 'maj7#5', m7b5: 'm7b5', '7s9': '7#9', '7b9': '7b9', '7b5': '7b5', '9b5': '9b5' })[id] ?? templateSymbol(id),
 }));
+const afterSus = TEMPLATE_TYPES.findIndex(({ id }) => id === '7sus4') + 1;
+export const CHORD_TYPES = [...TEMPLATE_TYPES.slice(0, afterSus), POWER_CHORD, ...TEMPLATE_TYPES.slice(afterSus)];
 
 const TYPES = new Map(CHORD_TYPES.map((type) => [type.id, type]));
 const ALIASES = new Map(CHORD_TYPES.flatMap((type) => (
-  [type.key, type.symbol, templateSymbol(type.id)].map((alias) => [alias.toLowerCase(), type.id])
+  [type.key, type.symbol, ...(type.base ? [] : [templateSymbol(type.id)])].map((alias) => [alias.toLowerCase(), type.id])
 )));
-ALIASES.set('min', 'min');
-ALIASES.set('min7', 'min7');
-ALIASES.set('ø7', 'm7b5');
-ALIASES.set('ø', 'm7b5');
+for (const [alias, type] of [
+  ['min', 'min'], ['min7', 'min7'], ['ø7', 'm7b5'], ['ø', 'm7b5'],
+  ['o', 'dim'], ['°', 'dim'], ['o7', 'dim7'], ['°7', 'dim7'],
+  ['+', 'aug'], ['+7', '7s5'], ['7+', '7s5'], ['sus', 'sus4'],
+]) ALIASES.set(alias, type);
 
 export function formatNote(text) {
   return text.replaceAll('#', '♯').replaceAll('b', '♭');
@@ -68,7 +74,9 @@ function playablePosition(position, namesByPitch, bassPitch) {
 export function lookupChord(database, query) {
   const { root, type, bass } = query;
   const info = TYPES.get(type);
-  const chord = buildChord(root, type);
+  const chord = info.base
+    ? { tones: info.degrees.map((index) => buildChord(root, info.base).tones[index]) }
+    : buildChord(root, type);
   const rootKey = DATA_KEYS[parseNote(root).pitchClass];
   const bassPitch = bass ? parseNote(bass).pitchClass : null;
   const namesByPitch = new Map(chord.tones.map(({ pitchClass, name }) => [pitchClass, name]));

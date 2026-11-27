@@ -45,7 +45,7 @@ test('BPM 以實際倍速即時換算', () => {
 });
 
 test('音檔的速度以 0.05 倍遞增並含原速', () => {
-  assert.equal(AUDIO_SPEEDS[0], 0.3);
+  assert.equal(AUDIO_SPEEDS[0], 0.25);
   assert.equal(AUDIO_SPEEDS.at(-1), 2);
   assert.ok(AUDIO_SPEEDS.includes(1));
   assert.ok(AUDIO_SPEEDS.slice(1).every((speed, index) => Math.abs(speed - AUDIO_SPEEDS[index] - 0.05) < 1e-9));
