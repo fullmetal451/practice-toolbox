@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#19150f">
+    <title>換和弦練習</title>
+    <link rel="stylesheet" href="../src/toolbox.css">
+    <link rel="stylesheet" href="../voicings/diagram.css">
+    <link rel="stylesheet" href="./changes.css">
+  </head>
+  <body class="toolbox">
+    <header class="tool-nav wrap">
+      <a class="brand" href="../">練琴工具箱</a>
+      <nav aria-label="練習工具">
+        <a href="../chords/">和弦練習</a>
+        <a href="../fretboard/">指板音名</a>
+        <a href="../loop/">循環播放器</a>
+        <a href="../voicings/">和弦指法</a>
+        <a href="./" aria-current="page">換和弦</a>
+        <a href="../scales/">音階指板</a>
+        <a href="../metronome/">節拍器</a>
+      </nav>
+    </header>
+    <main class="wrap changes-page">
+      <h1>換和弦練習</h1>
+      <section class="panel stage" aria-label="練習畫面">
+        <div class="stage-grid">
+          <div class="now">
+            <p id="now-label" class="stage-label">第一個和弦</p>
+            <h2 id="now-name" class="now-name">—</h2>
+            <p id="now-position" class="hint"></p>
+            <div id="now-diagram"></div>
+          </div>
+          <div id="next-box" class="next">
+            <p class="stage-label">下一個</p>
+            <h2 id="next-name" class="next-name">—</h2>
+            <p id="next-position" class="hint"></p>
+            <div id="next-diagram"></div>
+          </div>
+        </div>
+        <div id="beats" class="beats" aria-hidden="true"></div>
+        <p id="status" class="hint status" role="status">正在載入指法資料…</p>
+        <div class="play-row">
+          <div class="tempo">
+            <button id="slower" type="button" class="step" aria-label="慢 1 BPM">−</button>
+            <label class="bpm-field"><input id="bpm" type="number" min="30" max="200" step="1" value="60" inputmode="numeric" aria-describedby="bpm-unit"><span id="bpm-unit">BPM</span></label>
+            <button id="faster" type="button" class="step" aria-label="快 1 BPM">＋</button>
+          </div>
+          <button id="toggle" type="button" class="primary" disabled>開始</button>
+        </div>
+      </section>
+
+      <div class="setup-grid">
+        <section class="panel" aria-labelledby="set-heading">
+          <h2 id="set-heading">和弦組</h2>
+          <form id="set-form" class="set-form">
+            <label>常用組合
+              <select id="preset"></select>
+            </label>
+            <label>自己輸入
+              <span class="set-row">
+                <input id="chord-list" type="text" value="C G Am F" placeholder="例如 C G Am F" autocapitalize="off" autocomplete="off" spellcheck="false">
+                <button type="submit">套用</button>
+              </span>
+            </label>
+          </form>
+          <p id="set-status" class="hint" role="status">用空白或逗號分隔，2～12 個和弦。</p>
+          <div id="chord-cards" class="chord-cards"></div>
+        </section>
+
+        <section class="panel" aria-labelledby="settings-heading">
+          <h2 id="settings-heading">設定</h2>
+          <div class="setting-grid">
+            <label>每個和弦幾拍
+              <select id="beats-per-chord"></select>
+            </label>
+            <label>順序
+              <select id="order">
+                <option value="order" selected>依序</option>
+                <option value="shuffle">隨機</option>
+              </select>
+            </label>
+          </div>
+          <label class="check"><input id="count-in" type="checkbox" checked> 開始前先數一小節預備拍</label>
+          <label class="check"><input id="click" type="checkbox" checked> 節拍聲（換和弦的那一拍較高）</label>
+          <label>音量<input id="volume" type="range" min="0" max="1" step="0.05" value="0.8"></label>
+          <p class="hint">下一個和弦的框在換之前一拍會亮起來。</p>
+        </section>
+      </div>
+      <p class="hint shortcuts">鍵盤快捷鍵 <kbd>Space</kbd> 開始／停止 <kbd>↑</kbd> <kbd>↓</kbd> 調 1 BPM（加 <kbd>Shift</kbd> 調 5）</p>
+      <footer class="hint">指法資料來自 <a href="https://github.com/tombatossals/chords-db" target="_blank" rel="noopener">chords-db</a>（<a href="../voicings/LICENSE-chords-db.txt">MIT 授權</a>）。</footer>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

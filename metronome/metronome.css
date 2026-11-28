@@ -1,0 +1,46 @@
+.metronome-page { padding-block: clamp(22px, 3vw, 42px) 52px; }
+.metronome-page h1 { margin-bottom: 18px; }
+.metronome-page [hidden] { display: none !important; }
+.metronome-grid { display: grid; gap: 16px; grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr); align-items: start; }
+.panel { min-width: 0; padding: clamp(14px, 2.4vw, 24px); background: #262019; border: 1px solid #5a4b39; border-radius: 10px; display: grid; gap: 12px; }
+.metronome-page label:not(.check, .bpm-field) { display: grid; gap: 4px; color: #e7d4b7; font-size: .88rem; font-weight: 650; }
+.metronome-page :is(input[type=number], select) { width: 100%; min-width: 0; min-height: 44px; padding: 8px; border: 1px solid #78654d; border-radius: 5px; color: #faedd6; background: #1b1713; font: inherit; }
+.metronome-page select:disabled { opacity: .55; }
+.metronome-page button { display: inline-flex; justify-content: center; align-items: center; min-height: 48px; padding: 8px 16px; border: 1px solid #7f684c; border-radius: 6px; background: #352a1f; color: #faead0; font: inherit; font-weight: 700; cursor: pointer; touch-action: manipulation; }
+.metronome-page button:hover { border-color: #ffce81; }
+.metronome-page .primary { color: #201407; background: #edb45e; border-color: #edb45e; }
+.metronome-page input[type=range] { width: 100%; min-height: 40px; margin: 0; accent-color: #edb45e; cursor: pointer; }
+.hint { color: #cbbba2; font-size: .88rem; }
+.hint:empty { display: none; }
+
+.tempo-row { display: grid; grid-template-columns: 64px minmax(0, 1fr) 64px; gap: 10px; align-items: center; }
+.metronome-page .step { min-height: 64px; padding: 0; font-size: 2rem; line-height: 1; }
+.bpm-field { display: grid; justify-items: center; color: #e7d4b7; font-weight: 650; }
+.metronome-page .bpm-field input { min-height: 0; padding: 0; border: 0; background: transparent; text-align: center; color: #ffe2b0; font: 800 clamp(3rem, 12vw, 4.6rem)/1.05 ui-monospace, Consolas, monospace; font-variant-numeric: tabular-nums; -moz-appearance: textfield; }
+.bpm-field input::-webkit-inner-spin-button, .bpm-field input::-webkit-outer-spin-button { appearance: none; margin: 0; }
+.bpm-field input:focus-visible { outline: 2px solid #ffd788; outline-offset: 2px; border-radius: 6px; }
+
+.beats { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; min-height: 44px; align-items: center; padding-block: 6px; }
+.beats span { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #8a6b40; background: #1b1713; transition: background-color 60ms, transform 60ms; }
+.beats span[data-level=accent] { border-color: #ffcf7f; }
+.beats span[data-level=group] { border-color: #e0b06a; }
+.beats span.on { background: #f0c27a; transform: scale(1.18); }
+.beats span.on[data-level=accent] { background: #ffdf9f; box-shadow: 0 0 0 4px #ffcf7f44; }
+.beats span.on.sub { background: #7f6440; transform: scale(1.05); }
+#bar-status { text-align: center; font-variant-numeric: tabular-nums; }
+
+.play-row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 10px; }
+.metronome-page #toggle { min-height: 56px; font-size: 1.2rem; }
+
+.setting-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.setting-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.check { display: flex; gap: 8px; align-items: center; min-height: 40px; }
+.check input { width: 18px; height: 18px; accent-color: #edb45e; }
+.ramp { display: grid; gap: 8px; margin: 0; padding: 10px 12px 12px; border: 1px solid #5a4b39; border-radius: 6px; }
+.ramp legend { padding-inline: 4px; color: #f1dcbc; font-weight: 700; }
+.shortcuts { margin-top: 14px; }
+kbd { font-size: .85em; padding: 1px 4px; background: #3d3023; border-radius: 3px; white-space: nowrap; }
+
+@media (max-width: 760px) { .metronome-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 430px) { .setting-grid.three { grid-template-columns: repeat(2, minmax(0, 1fr)); } .setting-grid.three label:last-child { grid-column: 1 / -1; } }
+@media (pointer: coarse) { .shortcuts { display: none; } }

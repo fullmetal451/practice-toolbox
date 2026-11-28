@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#19150f">
+    <title>音階指板</title>
+    <link rel="stylesheet" href="../src/toolbox.css">
+    <link rel="stylesheet" href="./scales.css">
+  </head>
+  <body class="toolbox">
+    <header class="tool-nav wrap">
+      <a class="brand" href="../">練琴工具箱</a>
+      <nav aria-label="練習工具">
+        <a href="../chords/">和弦練習</a>
+        <a href="../fretboard/">指板音名</a>
+        <a href="../loop/">循環播放器</a>
+        <a href="../voicings/">和弦指法</a>
+        <a href="../changes/">換和弦</a>
+        <a href="./" aria-current="page">音階指板</a>
+        <a href="../metronome/">節拍器</a>
+      </nav>
+    </header>
+    <main class="wrap scales-page">
+      <h1>音階指板</h1>
+      <section class="panel" aria-label="音階設定">
+        <div class="setting-grid">
+          <label>主音<select id="root"></select></label>
+          <label>音階<select id="scale"></select></label>
+          <label>範圍<select id="position"></select></label>
+          <label>標示<select id="labels">
+            <option value="names" selected>音名</option>
+            <option value="degrees">度數</option>
+            <option value="roots">只標根音</option>
+          </select></label>
+        </div>
+        <p id="scale-summary" class="summary">正在載入…如果一直停在這裡、選單是空的，請按 Ctrl＋F5（手機請重新整理）。</p>
+      </section>
+
+      <section class="panel board-panel" aria-label="指板與跟拍走音">
+        <p class="hint">第 1 弦在最上面，格數往右增加。<span class="tap-hint">點音可以試聽。</span></p>
+        <div id="neck-scroll" class="neck-scroll" tabindex="0" aria-label="指板，可左右捲動">
+          <div id="neck" class="neck"></div>
+        </div>
+        <p class="legend"><span class="dot root"></span> 根音 <span class="dot"></span> 音階音</p>
+        <p id="walk-status" class="walk-status" role="status"></p>
+        <div class="walk-row">
+          <div class="tempo">
+            <button id="slower" type="button" class="step" aria-label="慢 1 BPM">−</button>
+            <label class="bpm-field"><input id="bpm" type="number" min="30" max="200" step="1" value="60" inputmode="numeric" aria-describedby="bpm-unit"><span id="bpm-unit">BPM</span></label>
+            <button id="faster" type="button" class="step" aria-label="快 1 BPM">＋</button>
+          </div>
+          <button id="toggle" type="button" class="primary">開始</button>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="walk-heading">
+        <h2 id="walk-heading">跟拍走音設定</h2>
+        <p class="hint">在選定的把位裡由低到高、再由高到低，依亮起的位置自己彈；藍色大圓點是現在的音，藍框是下一個音。</p>
+        <div class="setting-grid">
+          <label>每拍幾個音<select id="per-beat">
+            <option value="1" selected>1 個（四分音符）</option>
+            <option value="2">2 個（八分音符）</option>
+          </select></label>
+          <label>音量<input id="volume" type="range" min="0" max="1" step="0.05" value="0.8"></label>
+        </div>
+        <div class="checks">
+          <label class="check"><input id="count-in" type="checkbox" checked> 先數 4 拍預備拍</label>
+          <label class="check"><input id="click" type="checkbox" checked> 節拍聲</label>
+          <label class="check"><input id="pitch" type="checkbox"> 同時播放音高</label>
+        </div>
+      </section>
+      <p class="hint shortcuts">鍵盤快捷鍵 <kbd>Space</kbd> 開始／停止 <kbd>↑</kbd> <kbd>↓</kbd> 調 1 BPM（加 <kbd>Shift</kbd> 調 5）</p>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

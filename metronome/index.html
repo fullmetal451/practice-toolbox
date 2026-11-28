@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#19150f">
+    <title>節拍器</title>
+    <link rel="stylesheet" href="../src/toolbox.css">
+    <link rel="stylesheet" href="./metronome.css">
+  </head>
+  <body class="toolbox">
+    <header class="tool-nav wrap">
+      <a class="brand" href="../">練琴工具箱</a>
+      <nav aria-label="練習工具">
+        <a href="../chords/">和弦練習</a>
+        <a href="../fretboard/">指板音名</a>
+        <a href="../loop/">循環播放器</a>
+        <a href="../voicings/">和弦指法</a>
+        <a href="../changes/">換和弦</a>
+        <a href="../scales/">音階指板</a>
+        <a href="./" aria-current="page">節拍器</a>
+      </nav>
+    </header>
+    <main class="wrap metronome-page">
+      <h1>節拍器</h1>
+      <div class="metronome-grid">
+        <section class="panel tempo-panel" aria-label="速度與播放">
+          <div class="tempo-row">
+            <button id="slower" type="button" class="step" aria-label="慢 1 BPM">−</button>
+            <label class="bpm-field">
+              <input id="bpm" type="number" min="20" max="300" step="1" value="80" inputmode="numeric" aria-describedby="bpm-unit">
+              <span id="bpm-unit">BPM</span>
+            </label>
+            <button id="faster" type="button" class="step" aria-label="快 1 BPM">＋</button>
+          </div>
+          <input id="bpm-slider" type="range" min="20" max="300" step="1" value="80" aria-label="速度（BPM）">
+          <div id="beats" class="beats" aria-hidden="true"></div>
+          <p id="bar-status" class="hint" role="status">按「開始」播放。</p>
+          <div class="play-row">
+            <button id="toggle" type="button" class="primary">開始</button>
+            <button id="tap" type="button">點按測速</button>
+          </div>
+          <p id="tap-status" class="hint" role="status"></p>
+        </section>
+
+        <section class="panel" aria-labelledby="settings-heading">
+          <h2 id="settings-heading">設定</h2>
+          <div class="setting-grid">
+            <label>拍號
+              <select id="meter">
+                <option value="2/4">2/4</option>
+                <option value="3/4">3/4</option>
+                <option value="4/4" selected>4/4</option>
+                <option value="6/8">6/8</option>
+              </select>
+            </label>
+            <label>細分
+              <select id="subdivision">
+                <option value="1" selected>不細分</option>
+                <option value="2">八分音符</option>
+                <option value="3">三連音</option>
+                <option value="4">十六分音符</option>
+              </select>
+            </label>
+          </div>
+          <p id="meter-help" class="hint"></p>
+          <label class="check"><input id="accent" type="checkbox" checked> 第一拍重音</label>
+          <label>音量<input id="volume" type="range" min="0" max="1" step="0.05" value="0.8"></label>
+
+          <fieldset class="ramp">
+            <legend>自動加速</legend>
+            <div class="setting-grid three">
+              <label>每幾小節<input id="ramp-every" type="number" min="0" max="64" step="1" value="0" inputmode="numeric"></label>
+              <label>每次加（BPM）<input id="ramp-step" type="number" min="1" max="50" step="1" value="5" inputmode="numeric"></label>
+              <label>上限（BPM）<input id="ramp-ceiling" type="number" min="20" max="300" step="1" value="120" inputmode="numeric"></label>
+            </div>
+            <p id="ramp-status" class="hint">每幾小節設為 0，即關閉自動加速。停止後回到起始速度。</p>
+          </fieldset>
+        </section>
+      </div>
+      <p class="hint shortcuts">鍵盤快捷鍵 <kbd>Space</kbd> 開始／停止 <kbd>↑</kbd> <kbd>↓</kbd> 調 1 BPM（加 <kbd>Shift</kbd> 調 5） <kbd>T</kbd> 點按測速</p>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

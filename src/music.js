@@ -129,7 +129,7 @@ function accidentalName(value) {
   return value > 0 ? '#'.repeat(value) : 'b'.repeat(Math.abs(value));
 }
 
-function spellTone(root, token) {
+export function spellTone(root, token) {
   const rootNote = parseNote(root);
   const spec = degreeSpec(token);
   const letter = LETTERS[modulo(LETTERS.indexOf(rootNote.letter) + spec.letterSteps, LETTERS.length)];

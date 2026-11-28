@@ -1,6 +1,7 @@
 import { ROOTS } from '../src/music.js';
 import { CHORD_TYPES, chordSymbol, formatNote, lookupChord, parseChordQuery } from './catalog.js';
 import { playNotes } from './audio.js';
+import { diagram, positionLabel } from './diagram.js';
 
 const ui = Object.fromEntries([...document.querySelectorAll('[id]')].map((element) => [element.id, element]));
 let database;
@@ -26,86 +27,19 @@ function playButton(label, notes, spacing, className = '') {
   return button;
 }
 
-function diagram(voicing) {
-  const { strings, barres, baseFret } = voicing;
-  const rows = [...strings].reverse();
-  const fretCount = Math.max(4, ...strings.map(({ relative }) => relative));
-  const stringPosition = (number) => (number - 1) * 100 / (strings.length - 1);
-  const fretCenter = (relative) => `${(relative - 0.5) * 100 / fretCount}%`;
-  const board = element('div', '', 'voicing-diagram');
-  const statuses = element('div', '', 'string-statuses');
-  statuses.setAttribute('aria-hidden', 'true');
-  const neck = element('div', '', 'diagram-neck');
-  neck.setAttribute('role', 'img');
-  neck.setAttribute('aria-label', rows.map(({ number, fret, finger }) => (
-    `第 ${number} 弦${fret < 0 ? '不彈' : fret === 0 ? '空弦' : `第 ${fret} 格${finger ? `用第 ${finger} 指` : ''}`}`
-  )).join('、'));
-  const stringNotes = element('div', '', 'string-notes');
-  const fretLabels = element('div', '', 'fret-labels');
-  fretLabels.style.setProperty('--fret-count', fretCount);
-
-  for (const { number, fret, midi, name } of rows) {
-    const status = element('span', fret < 0 ? '×' : fret === 0 ? '○' : '');
-    statuses.append(status);
-    const line = element('span', '', 'diagram-string');
-    line.dataset.string = number;
-    line.style.top = `${stringPosition(number)}%`;
-    neck.append(line);
-
-    if (midi === null) {
-      stringNotes.append(element('span'));
-    } else {
-      const button = playButton(formatNote(name), [midi], 0, 'string-note');
-      button.setAttribute('aria-label', `試聽第 ${number} 弦 ${formatNote(name)}`);
-      stringNotes.append(button);
-    }
-  }
-  for (let edge = 0; edge <= fretCount; edge++) {
-    const isNut = edge === 0 && baseFret === 1;
-    const line = element('span', '', isNut ? 'diagram-fret diagram-nut' : 'diagram-fret');
-    line.style.left = `${edge * 100 / fretCount}%`;
-    neck.append(line);
-    if (edge < fretCount) fretLabels.append(element('span', String(baseFret + edge)));
-  }
-  const barredStrings = new Set();
-  for (const relative of barres) {
-    for (const finger of [1, 2, 3, 4]) {
-      const pressed = rows.filter((string) => string.relative === relative && string.finger === finger);
-      if (pressed.length < 2) continue;
-      const first = stringPosition(pressed[0].number);
-      const last = stringPosition(pressed.at(-1).number);
-      const barre = element('span', '', 'barre-span');
-      barre.dataset.finger = finger;
-      barre.dataset.fret = baseFret + relative - 1;
-      barre.style.left = fretCenter(relative);
-      barre.style.setProperty('--start', `${first}%`);
-      barre.style.setProperty('--length', `${last - first}%`);
-      barre.append(element('span', String(finger)));
-      neck.append(barre);
-      for (const { number } of pressed) barredStrings.add(number);
-    }
-  }
-  for (const { number, fret, relative, finger } of rows) {
-    if (relative < 1 || barredStrings.has(number)) continue;
-    const marker = element('span', String(finger || ''), 'finger-marker');
-    marker.dataset.string = number;
-    marker.dataset.fret = fret;
-    marker.style.left = fretCenter(relative);
-    marker.style.top = `${stringPosition(number)}%`;
-    neck.append(marker);
-  }
-  board.append(statuses, neck, stringNotes, fretLabels);
-  return board;
+function noteButton({ number, midi, name }) {
+  const button = playButton(formatNote(name), [midi], 0, 'string-note');
+  button.setAttribute('aria-label', `試聽第 ${number} 弦 ${formatNote(name)}`);
+  return button;
 }
 
 function voicingCard(voicing, index) {
   const card = element('article', '', 'voicing-card');
   const lowest = formatNote(voicing.lowest.name);
-  const position = voicing.baseFret === 1 && voicing.strings.some(({ fret }) => fret === 0) ? '開放把位' : `第 ${voicing.baseFret} 格起`;
   card.append(
-    element('h3', `指法 ${index + 1} · ${position}`),
+    element('h3', `指法 ${index + 1} · ${positionLabel(voicing)}`),
     element('p', `${voicing.positions}　低音 ${lowest}`, 'position-text'),
-    diagram(voicing),
+    diagram(voicing, { noteLabel: noteButton }),
   );
   const notes = voicing.strings.flatMap(({ midi }) => midi === null ? [] : [midi]);
   const actions = element('div', '', 'voicing-actions');

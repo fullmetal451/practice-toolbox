@@ -1,0 +1,73 @@
+.changes-page { padding-block: clamp(22px, 3vw, 42px) 52px; }
+.changes-page h1 { margin-bottom: 18px; }
+.changes-page [hidden] { display: none !important; }
+.panel { min-width: 0; padding: clamp(14px, 2.4vw, 24px); background: #262019; border: 1px solid #5a4b39; border-radius: 10px; display: grid; gap: 12px; align-content: start; }
+.changes-page label:not(.check, .bpm-field) { display: grid; gap: 4px; color: #e7d4b7; font-size: .88rem; font-weight: 650; }
+.changes-page :is(input[type=number], input[type=text], select) { width: 100%; min-width: 0; min-height: 44px; padding: 8px; border: 1px solid #78654d; border-radius: 5px; color: #faedd6; background: #1b1713; font: inherit; }
+.changes-page button { display: inline-flex; justify-content: center; align-items: center; min-height: 44px; padding: 8px 16px; border: 1px solid #7f684c; border-radius: 6px; background: #352a1f; color: #faead0; font: inherit; font-weight: 700; cursor: pointer; touch-action: manipulation; }
+.changes-page button:hover:not(:disabled) { border-color: #ffce81; }
+.changes-page button:disabled { opacity: .45; cursor: default; }
+.changes-page .primary { color: #201407; background: #edb45e; border-color: #edb45e; }
+.changes-page input[type=range] { width: 100%; min-height: 40px; margin: 0; accent-color: #edb45e; cursor: pointer; }
+.hint { color: #cbbba2; font-size: .88rem; }
+.hint:empty { display: none; }
+
+.stage-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 14px; align-items: start; }
+.now, .next { min-width: 0; padding: 10px 12px 4px; border: 2px solid transparent; border-radius: 8px; }
+.now { background: #2e261d; }
+.next { border-color: #4a3d2e; transition: border-color 80ms, background-color 80ms; }
+.next.soon { border-color: #ffcf7f; background: #3a2d1d; }
+.stage-label { color: #e8c482; font-size: .85rem; font-weight: 700; }
+.changes-page :is(.now-name, .next-name) { font: 800 clamp(2.3rem, 9vw, 4.2rem)/1.05 ui-monospace, Consolas, monospace; color: #ffe2b0; margin-block: 2px; overflow-wrap: anywhere; }
+.changes-page .next-name { font-size: clamp(1.6rem, 6vw, 2.8rem); color: #f1dcbc; }
+.now .voicing-diagram { --string-spacing: 34px; --marker-size: 24px; }
+.next .voicing-diagram { --string-spacing: 28px; --marker-size: 20px; }
+.changes-page .string-note { font-size: .8rem; color: #d9c6a7; }
+
+.beats { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; min-height: 42px; align-items: center; }
+.beats span { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #8a6b40; background: #1b1713; transition: background-color 60ms, transform 60ms; }
+.beats span.first { border-color: #ffcf7f; }
+.beats span.count { border-style: dashed; }
+.beats span.on { background: #f0c27a; transform: scale(1.18); }
+.beats span.on.first { background: #ffdf9f; box-shadow: 0 0 0 4px #ffcf7f44; }
+.status { text-align: center; font-variant-numeric: tabular-nums; }
+
+.play-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; align-items: center; }
+.tempo { display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; gap: 8px; align-items: center; }
+.changes-page .step { min-height: 56px; padding: 0; font-size: 1.8rem; line-height: 1; }
+.bpm-field { display: grid; justify-items: center; color: #e7d4b7; font-size: .8rem; font-weight: 650; }
+.changes-page .bpm-field input { min-height: 0; padding: 0; border: 0; background: transparent; text-align: center; color: #ffe2b0; font: 800 2.2rem/1.05 ui-monospace, Consolas, monospace; font-variant-numeric: tabular-nums; -moz-appearance: textfield; }
+.bpm-field input::-webkit-inner-spin-button, .bpm-field input::-webkit-outer-spin-button { appearance: none; margin: 0; }
+.bpm-field input:focus-visible { outline: 2px solid #ffd788; outline-offset: 2px; border-radius: 6px; }
+.changes-page #toggle { min-height: 56px; font-size: 1.2rem; }
+
+.setup-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr); gap: 16px; margin-top: 16px; align-items: start; }
+.set-form { display: grid; gap: 10px; }
+.set-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.chord-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.chord-card { min-width: 0; padding: 10px; border: 1px solid #5a4b39; border-radius: 8px; background: #1f1a14; }
+.chord-card .voicing-diagram { --string-spacing: 22px; --marker-size: 17px; margin-block: 4px 8px; }
+.chord-card .finger-marker, .chord-card .barre-span { font-size: .68rem; }
+.card-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+.card-heading h3 { margin: 0; font: 800 1.3rem/1.2 ui-monospace, Consolas, monospace; color: #ffe2b0; }
+.card-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.changes-page .card-controls button { min-height: 40px; padding: 4px; font-size: 1.3rem; line-height: 1; }
+.setting-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.check { display: flex; gap: 8px; align-items: center; min-height: 40px; }
+.check input { width: 18px; height: 18px; flex: none; accent-color: #edb45e; }
+.shortcuts, .changes-page footer { margin-top: 14px; }
+kbd { font-size: .85em; padding: 1px 4px; background: #3d3023; border-radius: 3px; white-space: nowrap; }
+
+@media (max-width: 760px) { .setup-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 560px) {
+  .stage-grid { gap: 8px; }
+  .now, .next { padding: 8px 8px 2px; }
+  /* Narrow screens drop the note names so the diagram keeps room for the frets. */
+  .now .voicing-diagram { grid-template-columns: 18px minmax(0, 1fr); column-gap: 5px; --string-spacing: 30px; --marker-size: 22px; }
+  .now .string-notes { display: none; }
+  .next .voicing-diagram { grid-template-columns: 16px minmax(0, 1fr); column-gap: 4px; --string-spacing: 24px; --marker-size: 18px; }
+  .next .finger-marker, .next .barre-span { font-size: .7rem; }
+  .play-row { grid-template-columns: minmax(0, 1fr); }
+  .chord-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (pointer: coarse) { .shortcuts { display: none; } }
